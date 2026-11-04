@@ -2,7 +2,7 @@
 
 Implementação completa do projeto final de Construção de Backend (Django/Python), baseada em `Guia1.txt` e no PDF `Projeto5_Guia_do_Aluno (1).pdf`.
 
-> **Estado em 03/11/2026:** aplicação criada, banco SQLite local migrado, suíte automatizada aprovada e estruturas de Supabase/PostgreSQL e Vercel preparadas. Nenhum segredo foi gravado no projeto e nenhum deploy externo foi executado porque isso exige contas, URLs e credenciais do proprietário.
+> **Estado em 03/11/2026:** aplicação criada, banco SQLite local validado, suíte automatizada aprovada, migrations aplicadas no Supabase e estrutura Vercel preparada. Nenhum segredo foi gravado no projeto ou no GitHub.
 
 ## 1. O que foi construído
 
@@ -229,7 +229,7 @@ Não digite segredos diretamente em comandos que ficarão no histórico do shell
 - [x] Filtros de catálogo por busca, preço e disponibilidade.
 - [x] Painel do vendedor com métricas, vendas por categoria e pedidos recentes.
 - [x] Avaliações de produtos com validação de compra e unicidade.
-- [ ] Criar projeto Supabase real e inserir `DATABASE_URL` (ação dependente da conta).
+- [x] Criar projeto Supabase real, configurar `DATABASE_URL` localmente e aplicar migrations.
 - [ ] Criar projeto Vercel real e inserir variáveis (ação dependente da conta).
 - [ ] Produzir screenshots do domínio final (após deploy).
 
