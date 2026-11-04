@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -67,3 +67,28 @@ class ItemPedido(models.Model):
 
     def __str__(self):
         return f"{self.quantidade}x {self.produto}"
+
+
+class Avaliacao(models.Model):
+    produto = models.ForeignKey(
+        Produto, on_delete=models.CASCADE, related_name="avaliacoes"
+    )
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="avaliacoes"
+    )
+    nota = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+    comentario = models.TextField(blank=True, max_length=1000)
+    criada_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-criada_em"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["produto", "usuario"], name="uma_avaliacao_por_usuario_produto"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.nota}/5 - {self.produto}"

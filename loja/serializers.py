@@ -2,17 +2,18 @@ from django.db import transaction
 from django.db.models import F
 from rest_framework import serializers
 
-from .models import ItemPedido, Pedido, Produto
+from .models import Avaliacao, ItemPedido, Pedido, Produto
 
 
 class ProdutoSerializer(serializers.ModelSerializer):
     categoria_nome = serializers.CharField(source="categoria.nome", read_only=True)
+    media_avaliacoes = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Produto
         fields = [
             "id", "nome", "descricao", "preco", "estoque", "categoria",
-            "categoria_nome", "vendedor",
+            "categoria_nome", "vendedor", "media_avaliacoes",
         ]
         read_only_fields = ["vendedor"]
 
@@ -58,3 +59,21 @@ class PedidoSerializer(serializers.ModelSerializer):
                     estoque=F("estoque") - item["quantidade"]
                 )
         return pedido
+
+
+class AvaliacaoSerializer(serializers.ModelSerializer):
+    usuario_nome = serializers.CharField(source="usuario.username", read_only=True)
+
+    class Meta:
+        model = Avaliacao
+        fields = ["id", "produto", "usuario", "usuario_nome", "nota", "comentario", "criada_em"]
+        read_only_fields = ["produto", "usuario", "criada_em"]
+
+    def validate(self, attrs):
+        produto_id = self.context["view"].kwargs["produto_id"]
+        usuario = self.context["request"].user
+        if Avaliacao.objects.filter(produto_id=produto_id, usuario=usuario).exists():
+            raise serializers.ValidationError(
+                "Você já avaliou este produto."
+            )
+        return attrs

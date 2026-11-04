@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Categoria, ItemPedido, Pedido, Produto
+from .models import Avaliacao, Categoria, ItemPedido, Pedido, Produto
 
 
 @admin.register(Categoria)
@@ -38,3 +38,11 @@ class PedidoAdmin(admin.ModelAdmin):
     list_display = ("id", "comprador", "status", "criado_em")
     list_filter = ("status",)
     inlines = [ItemPedidoInline]
+
+
+@admin.register(Avaliacao)
+class AvaliacaoAdmin(admin.ModelAdmin):
+    list_display = ("produto", "usuario", "nota", "criada_em")
+    list_filter = ("nota",)
+    search_fields = ("produto__nome", "usuario__username", "comentario")
+    readonly_fields = ("produto", "usuario", "criada_em")

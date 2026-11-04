@@ -20,6 +20,8 @@ Implementação completa do projeto final de Construção de Backend (Django/Pyt
 - Catálogo que consome a API com `fetch()`, contador de conveniência em `localStorage` e proteção CSRF.
 - Filtros de catálogo por busca, categoria, preço e disponibilidade.
 - Painel do vendedor com estoque, unidades vendidas e faturamento.
+- Painel avançado com vendas por categoria e pedidos recentes.
+- Avaliações: somente compradores podem avaliar, com nota de 1 a 5 e uma avaliação por produto.
 - Configuração dual: SQLite local por padrão e PostgreSQL/Supabase quando `DATABASE_URL` existe.
 - Adaptador WSGI para Vercel em `api/index.py` e roteamento em `vercel.json`.
 
@@ -122,11 +124,11 @@ python manage.py test
 Resultado verificado:
 
 ```text
-Ran 14 tests in 20.445s
+Ran 19 tests in 27.642s
 OK
 ```
 
-Os testes cobrem checkout, baixa de estoque, limpeza do carrinho, falha atômica, leitura pública da API, filtros, exigência de login, preservação do carrinho no login, isolamento do Admin, validação de preço e proteção do preço histórico.
+Os testes cobrem checkout, baixa de estoque, limpeza do carrinho, falha atômica, leitura pública da API, filtros válidos e inválidos, exigência de login, preservação do carrinho no login, isolamento do Admin, validação de preço, avaliações autorizadas/duplicadas e proteção do preço histórico.
 
 ## 7. Configuração do Supabase
 
@@ -225,7 +227,8 @@ Não digite segredos diretamente em comandos que ficarão no histórico do shell
 - [x] `.gitignore` protegendo `.env`, banco local e ambientes virtuais.
 - [x] Testes automatizados aprovados.
 - [x] Filtros de catálogo por busca, preço e disponibilidade.
-- [x] Painel básico do vendedor.
+- [x] Painel do vendedor com métricas, vendas por categoria e pedidos recentes.
+- [x] Avaliações de produtos com validação de compra e unicidade.
 - [ ] Criar projeto Supabase real e inserir `DATABASE_URL` (ação dependente da conta).
 - [ ] Criar projeto Vercel real e inserir variáveis (ação dependente da conta).
 - [ ] Produzir screenshots do domínio final (após deploy).
@@ -274,6 +277,6 @@ Não digite segredos diretamente em comandos que ficarão no histórico do shell
 ## 11. Limitações e próximos passos
 
 - Stripe/Mercado Pago não foram ativados: exigem escolha de provedor e credenciais.
-- Avaliações e pagamento sandbox continuam como extensões pendentes; o painel básico do vendedor e os filtros já foram implementados.
+- O gateway de pagamento sandbox continua pendente porque exige escolha de provedor, conta de testes, credenciais e webhook real. Não foi substituído por mock.
 - Supabase e Vercel foram preparados, mas o provisionamento real depende de acesso às contas e não deve ser simulado.
 - O ambiente local gerou `db.sqlite3` e `.venv`; ambos estão protegidos pelo `.gitignore` e não devem ser enviados ao repositório.

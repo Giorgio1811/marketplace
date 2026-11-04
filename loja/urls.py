@@ -10,4 +10,9 @@ urlpatterns = [
     path("checkout/", views.finalizar_compra, name="checkout"),
     path("api/produtos/", api_views.ProdutoListCreateView.as_view(), name="api-produtos"),
     path("api/pedidos/", api_views.PedidoCreateView.as_view(), name="api-pedidos"),
+    path(
+        "api/produtos/<int:produto_id>/avaliacoes/",
+        api_views.AvaliacaoListCreateView.as_view(),
+        name="api-avaliacoes",
+    ),
 ]

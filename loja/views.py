@@ -56,6 +56,16 @@ def painel_vendedor(request):
     itens = ItemPedido.objects.filter(produto__vendedor=request.user).select_related(
         "produto", "pedido"
     )
+    vendas_por_categoria = {}
+    for item in itens:
+        nome_categoria = item.produto.categoria.nome
+        vendas_por_categoria[nome_categoria] = vendas_por_categoria.get(nome_categoria, 0) + item.subtotal
+    pedidos_recentes = (
+        Pedido.objects.filter(itens__produto__vendedor=request.user)
+        .select_related("comprador")
+        .distinct()
+        .order_by("-criado_em")[:5]
+    )
     return render(
         request,
         "loja/painel_vendedor.html",
@@ -65,6 +75,8 @@ def painel_vendedor(request):
             "estoque_total": sum(produto.estoque for produto in produtos),
             "total_vendido": sum(item.quantidade for item in itens),
             "faturamento": sum(item.subtotal for item in itens),
+            "vendas_por_categoria": vendas_por_categoria.items(),
+            "pedidos_recentes": pedidos_recentes,
         },
     )
 

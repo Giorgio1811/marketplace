@@ -8,7 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
 
-from .models import Categoria, ItemPedido, Pedido, Produto
+from .models import Avaliacao, Categoria, ItemPedido, Pedido, Produto
 
 User = get_user_model()
 
@@ -73,6 +73,13 @@ class MarketplaceTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual([item["nome"] for item in response.json()], ["Livro"])
+
+    def test_api_rejeita_faixa_de_preco_invalida(self):
+        response = APIClient().get(
+            reverse("api-produtos"),
+            {"preco_minimo": "20", "preco_maximo": "10"},
+        )
+        self.assertEqual(response.status_code, 400)
 
     def test_api_produtos_exige_login_para_escrita(self):
         response = APIClient().post(reverse("api-produtos"), {"nome": "Outro"})
@@ -160,3 +167,39 @@ class MarketplaceTests(TestCase):
         response = self.client.get("/admin/loja/produto/")
         self.assertContains(response, "Livro")
         self.assertNotContains(response, "Produto de outro")
+
+    def test_comprador_pode_avaliar_produto_que_comprou(self):
+        self.add(1)
+        self.client.post(reverse("checkout"))
+        api = APIClient()
+        api.force_authenticate(self.comprador)
+        response = api.post(
+            reverse("api-avaliacoes", args=[self.produto.pk]),
+            {"nota": 5, "comentario": "Excelente"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertEqual(Avaliacao.objects.get().nota, 5)
+
+    def test_usuario_sem_compra_nao_pode_avaliar(self):
+        api = APIClient()
+        api.force_authenticate(self.comprador)
+        response = api.post(
+            reverse("api-avaliacoes", args=[self.produto.pk]),
+            {"nota": 5},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_avaliacao_duplicada_e_rejeitada(self):
+        self.add(1)
+        self.client.post(reverse("checkout"))
+        Avaliacao.objects.create(produto=self.produto, usuario=self.comprador, nota=4)
+        api = APIClient()
+        api.force_authenticate(self.comprador)
+        response = api.post(
+            reverse("api-avaliacoes", args=[self.produto.pk]),
+            {"nota": 5},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
