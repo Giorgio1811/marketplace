@@ -130,6 +130,14 @@ class MarketplaceTests(TestCase):
         self.assertContains(response, "/api/produtos/")
         self.assertContains(response, "localStorage")
 
+    def test_adicao_por_fetch_retorna_contador_json(self):
+        response = self.client.post(
+            reverse("adicionar_carrinho", args=[self.produto.pk]),
+            HTTP_X_REQUESTED_WITH="fetch",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["itens"], 1)
+
     def test_produto_nao_permite_preco_negativo(self):
         produto = Produto(
             vendedor=self.vendedor, categoria=self.categoria,

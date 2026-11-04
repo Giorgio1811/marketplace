@@ -35,7 +35,11 @@ fetch("/api/produtos/?" + parametros)
             button.textContent = produto.estoque > 0 ? "Adicionar ao carrinho" : "Sem estoque";
             button.disabled = produto.estoque <= 0;
             button.onclick = () => fetch(`/carrinho/adicionar/${produto.id}/`, {
-                method: "POST", headers: {"X-CSRFToken": decodeURIComponent(getCookie("csrftoken") || "")}
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": decodeURIComponent(getCookie("csrftoken") || ""),
+                    "X-Requested-With": "fetch"
+                }
             }).then(response => {
                 if (!response.ok) throw new Error("Não foi possível adicionar");
                 return response.json();
