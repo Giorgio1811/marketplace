@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Marketplace{% endblock %}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 1000px; margin: 0 auto; padding: 1rem; }
+        nav { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+        .card { border: 1px solid #ddd; border-radius: .5rem; padding: 1rem; }
+        .preco { font-size: 1.25rem; font-weight: 700; }
+        button { cursor: pointer; padding: .5rem .75rem; }
+        .mensagem { padding: .75rem; background: #eef6ff; margin: .5rem 0; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border-bottom: 1px solid #ddd; padding: .6rem; text-align: left; }
+    </style>
+</head>
+<body>
+    <nav><a href="{% url 'catalogo' %}">Catálogo</a><a href="{% url 'carrinho' %}">Carrinho (<span id="contador-carrinho">0</span>)</a><a href="{% url 'painel-vendedor' %}">Painel do vendedor</a><a href="/admin/">Admin</a></nav>
+    {% for message in messages %}<div class="mensagem">{{ message }}</div>{% endfor %}
+    {% block conteudo %}{% endblock %}
+</body>
+</html>

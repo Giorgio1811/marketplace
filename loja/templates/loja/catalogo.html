@@ -1,0 +1,54 @@
+{% extends "loja/base.html" %}
+{% block titulo %}Catálogo | Marketplace{% endblock %}
+{% block conteudo %}
+<h1>Catálogo</h1>
+<form id="filtros">
+    <input name="busca" placeholder="Buscar por nome">
+    <input name="preco_minimo" type="number" step="0.01" min="0" placeholder="Preço mínimo">
+    <input name="preco_maximo" type="number" step="0.01" min="0" placeholder="Preço máximo">
+    <label><input name="disponivel" type="checkbox" value="true"> Somente disponíveis</label>
+    <button>Filtrar</button>
+</form>
+<p id="status">Carregando produtos...</p>
+<section id="grade" class="grade"></section>
+<script>
+function getCookie(name) {
+    return document.cookie.split("; ").find(row => row.startsWith(name + "="))?.split("=")[1];
+}
+const contador = document.getElementById("contador-carrinho");
+contador.textContent = localStorage.getItem("contador-carrinho") || "0";
+function carregarCatalogo() {
+const parametros = new URLSearchParams(new FormData(document.getElementById("filtros")));
+fetch("/api/produtos/?" + parametros)
+    .then(response => { if (!response.ok) throw new Error("Falha na API"); return response.json(); })
+    .then(produtos => {
+        document.getElementById("status").textContent = produtos.length + " produto(s) encontrado(s).";
+        const grade = document.getElementById("grade");
+        produtos.forEach(produto => {
+            const card = document.createElement("article");
+            card.className = "card";
+            card.innerHTML = `<h2></h2><small></small><p class="preco"></p><button></button>`;
+            card.querySelector("h2").textContent = produto.nome;
+            card.querySelector("small").textContent = produto.categoria_nome;
+            card.querySelector(".preco").textContent = "R$ " + produto.preco;
+            const button = card.querySelector("button");
+            button.textContent = produto.estoque > 0 ? "Adicionar ao carrinho" : "Sem estoque";
+            button.disabled = produto.estoque <= 0;
+            button.onclick = () => fetch(`/carrinho/adicionar/${produto.id}/`, {
+                method: "POST", headers: {"X-CSRFToken": decodeURIComponent(getCookie("csrftoken") || "")}
+            }).then(response => {
+                if (!response.ok) throw new Error("Não foi possível adicionar");
+                return response.json();
+            }).then(data => {
+                contador.textContent = data.itens;
+                localStorage.setItem("contador-carrinho", data.itens);
+            });
+            grade.appendChild(card);
+        });
+    })
+    .catch(error => { document.getElementById("status").textContent = "Não foi possível carregar o catálogo."; console.error(error); });
+}
+document.getElementById("filtros").onsubmit = event => { event.preventDefault(); document.getElementById("grade").replaceChildren(); carregarCatalogo(); };
+carregarCatalogo();
+</script>
+{% endblock %}
