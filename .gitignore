@@ -9,3 +9,5 @@ db.sqlite3
 staticfiles/
 .vscode/
 *.log
+
+seed_producao.py
