@@ -1,24 +1,41 @@
+{% load static %}
 <!doctype html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block titulo %}Marketplace{% endblock %}</title>
-    <style>
-        body { font-family: system-ui, sans-serif; max-width: 1000px; margin: 0 auto; padding: 1rem; }
-        nav { display: flex; gap: 1rem; margin-bottom: 2rem; }
-        .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
-        .card { border: 1px solid #ddd; border-radius: .5rem; padding: 1rem; }
-        .preco { font-size: 1.25rem; font-weight: 700; }
-        button { cursor: pointer; padding: .5rem .75rem; }
-        .mensagem { padding: .75rem; background: #eef6ff; margin: .5rem 0; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border-bottom: 1px solid #ddd; padding: .6rem; text-align: left; }
-    </style>
+    <meta name="description" content="Marketplace moderno com catálogo, carrinho e painel do vendedor.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'loja/styles.css' %}">
 </head>
 <body>
-    <nav><a href="{% url 'catalogo' %}">Catálogo</a><a href="{% url 'carrinho' %}">Carrinho (<span id="contador-carrinho">0</span>)</a><a href="{% url 'painel-vendedor' %}">Painel do vendedor</a><a href="/admin/">Admin</a></nav>
-    {% for message in messages %}<div class="mensagem">{{ message }}</div>{% endfor %}
-    {% block conteudo %}{% endblock %}
+    <div class="page-shell">
+        <header class="topbar glass-panel">
+            <div class="brand-wrap">
+                <div class="brand-mark">M</div>
+                <div>
+                    <span class="brand-kicker">Marketplace</span>
+                    <strong>Loja digital</strong>
+                </div>
+            </div>
+            <nav class="nav-links" aria-label="Navegação principal">
+                <a class="nav-link" href="{% url 'catalogo' %}">Catálogo</a>
+                <a class="nav-link" href="{% url 'carrinho' %}">Carrinho (<span id="contador-carrinho">0</span>)</a>
+                <a class="nav-link" href="{% url 'painel-vendedor' %}">Painel do vendedor</a>
+                <a class="nav-link" href="/admin/">Admin</a>
+            </nav>
+        </header>
+
+        {% for message in messages %}
+            <div class="mensagem {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}
+
+        <main class="content-area">
+            {% block conteudo %}{% endblock %}
+        </main>
+    </div>
 </body>
 </html>

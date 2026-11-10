@@ -115,18 +115,24 @@ Exemplo de pedido:
 
 ## 6. Testes automatizados executados
 
-Com o ambiente configurado:
+Para manter os testes isolados do Supabase, force um arquivo SQLite temporário. Isso é
+importante quando o `.env` local contém a `DATABASE_URL` de produção:
 
 ```powershell
+$env:DATABASE_URL="sqlite:///C:/marketplace/test-local.sqlite3"
+$env:DJANGO_DEBUG="True"
 python manage.py test
 ```
 
 Resultado verificado:
 
 ```text
-Ran 19 tests in 27.642s
+Ran 19 tests in 27.765s
 OK
 ```
+
+O parâmetro `ssl_require` só é aplicado a URLs PostgreSQL; assim, a mesma configuração
+continua segura no Supabase e funciona corretamente com SQLite durante os testes.
 
 Os testes cobrem checkout, baixa de estoque, limpeza do carrinho, falha atômica, leitura pública da API, filtros válidos e inválidos, exigência de login, preservação do carrinho no login, isolamento do Admin, validação de preço, avaliações autorizadas/duplicadas e proteção do preço histórico.
 
@@ -230,8 +236,10 @@ Não digite segredos diretamente em comandos que ficarão no histórico do shell
 - [x] Painel do vendedor com métricas, vendas por categoria e pedidos recentes.
 - [x] Avaliações de produtos com validação de compra e unicidade.
 - [x] Criar projeto Supabase real, configurar `DATABASE_URL` localmente e aplicar migrations.
-- [ ] Criar projeto Vercel real e inserir variáveis (ação dependente da conta).
-- [ ] Produzir screenshots do domínio final (após deploy).
+- [x] Criar projeto Vercel real e inserir variáveis.
+- [x] Publicar deployment de produção com estado `READY`.
+- [x] Validar catálogo e API no domínio `marketplace-giocb.vercel.app`.
+- [ ] Produzir screenshots do domínio final (opcional).
 
 ## 10. Erros encontrados e soluções aplicadas
 

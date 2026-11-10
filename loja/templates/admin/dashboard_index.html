@@ -1,0 +1,127 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'loja/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-shell">
+    <div class="dashboard-header">
+        <div>
+            <p class="dashboard-kicker">Painel de gestão</p>
+            <h1>Monitoramento administrativo</h1>
+        </div>
+        <span class="dashboard-badge">Últimos 30 dias</span>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="metric-card metric-card--primary">
+            <span class="metric-label">Vendas do dia</span>
+            <strong>R$ {{ dashboard_metrics.revenue_today|floatformat:2 }}</strong>
+            <small>{{ dashboard_metrics.orders_today }} pedidos</small>
+        </div>
+        <div class="metric-card metric-card--secondary">
+            <span class="metric-label">Receita mensal</span>
+            <strong>R$ {{ dashboard_metrics.revenue_month|floatformat:2 }}</strong>
+            <small>{{ dashboard_metrics.orders_month }} pedidos</small>
+        </div>
+        <div class="metric-card metric-card--accent">
+            <span class="metric-label">Melhor vendedor</span>
+            <strong>{{ dashboard_metrics.best_vendor.name }}</strong>
+            <small>R$ {{ dashboard_metrics.best_vendor.revenue|floatformat:2 }}</small>
+        </div>
+        <div class="metric-card metric-card--neutral">
+            <span class="metric-label">Produto destaque</span>
+            <strong>{{ dashboard_metrics.best_seller.name }}</strong>
+            <small>{{ dashboard_metrics.best_seller.units }} unidades</small>
+        </div>
+    </div>
+
+    <div class="dashboard-panels">
+        <div class="panel panel--wide">
+            <div class="panel-header">
+                <h2>Evolução das vendas</h2>
+            </div>
+            <div class="sales-bars">
+                {% for item in dashboard_metrics.daily_series %}
+                    <div class="sale-column">
+                        <div class="sale-bar" style="height: {% widthratio item.revenue dashboard_metrics.max_daily_revenue 100 %}%;"></div>
+                        <span>{{ item.label }}</span>
+                    </div>
+                {% empty %}
+                    <p class="empty-state">Ainda não há vendas registradas.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Top categorias</h2>
+            </div>
+            <ul class="list-compact">
+                {% for categoria in dashboard_metrics.top_categories %}
+                    <li>
+                        <span>{{ categoria.produto__categoria__nome }}</span>
+                        <strong>R$ {{ categoria.total_receita|floatformat:2 }}</strong>
+                    </li>
+                {% empty %}
+                    <li class="empty-row">Sem categoria em destaque.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="dashboard-panels dashboard-panels--bottom">
+        <div class="panel panel--wide">
+            <div class="panel-header">
+                <h2>Produtos mais vendidos</h2>
+            </div>
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Unidades</th>
+                        <th>Receita</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in dashboard_metrics.top_products %}
+                        <tr>
+                            <td>{{ produto.produto__nome }}</td>
+                            <td>{{ produto.total_unidades }}</td>
+                            <td>R$ {{ produto.total_receita|floatformat:2 }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">Ainda não há produtos vendidos.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Pedidos recentes</h2>
+            </div>
+            <ul class="list-compact list-compact--orders">
+                {% for pedido in dashboard_metrics.recent_orders %}
+                    <li>
+                        <div>
+                            <span class="order-title">#{{ pedido.id }}</span>
+                            <small>{{ pedido.comprador }}</small>
+                        </div>
+                        <strong>R$ {{ pedido.total|floatformat:2 }}</strong>
+                    </li>
+                {% empty %}
+                    <li class="empty-row">Nenhum pedido pago ou enviado.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{{ block.super }}
+{% endblock %}

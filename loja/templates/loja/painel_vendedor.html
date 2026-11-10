@@ -1,24 +1,78 @@
 {% extends "loja/base.html" %}
 {% block titulo %}Painel do vendedor | Marketplace{% endblock %}
 {% block conteudo %}
-<h1>Painel do vendedor</h1>
-<p>Resumo dos produtos cadastrados por <strong>{{ request.user.username }}</strong>.</p>
-<div class="grade">
-    <article class="card"><h2>{{ total_produtos }}</h2><p>Produtos</p></article>
-    <article class="card"><h2>{{ estoque_total }}</h2><p>Unidades em estoque</p></article>
-    <article class="card"><h2>{{ total_vendido }}</h2><p>Unidades vendidas</p></article>
-    <article class="card"><h2>R$ {{ faturamento|floatformat:2 }}</h2><p>Faturamento bruto</p></article>
+<section class="hero glass-panel compact">
+    <div>
+        <span class="eyebrow">Dashboard do vendedor</span>
+        <h1>Painel do vendedor</h1>
+        <p class="subtitle">Resumo dos produtos cadastrados por <strong>{{ request.user.username }}</strong>.</p>
+    </div>
+</section>
+
+<div class="summary-cards">
+    <article class="glass-panel metric-card">
+        <span class="metric-label">Produtos</span>
+        <strong>{{ total_produtos }}</strong>
+    </article>
+    <article class="glass-panel metric-card">
+        <span class="metric-label">Estoque</span>
+        <strong>{{ estoque_total }}</strong>
+    </article>
+    <article class="glass-panel metric-card">
+        <span class="metric-label">Vendidas</span>
+        <strong>{{ total_vendido }}</strong>
+    </article>
+    <article class="glass-panel metric-card accent">
+        <span class="metric-label">Faturamento</span>
+        <strong>R$ {{ faturamento|floatformat:2 }}</strong>
+    </article>
 </div>
-<h2>Meu estoque</h2>
-<table><tr><th>Produto</th><th>Estoque</th><th>Preço</th></tr>
-{% for produto in produtos %}<tr><td>{{ produto.nome }}</td><td>{{ produto.estoque }}</td><td>R$ {{ produto.preco }}</td></tr>
-{% empty %}<tr><td colspan="3">Nenhum produto cadastrado.</td></tr>{% endfor %}</table>
-<h2>Vendas por categoria</h2>
-<table><tr><th>Categoria</th><th>Faturamento</th></tr>
-{% for categoria, valor in vendas_por_categoria %}<tr><td>{{ categoria }}</td><td>R$ {{ valor|floatformat:2 }}</td></tr>
-{% empty %}<tr><td colspan="2">Nenhuma venda registrada.</td></tr>{% endfor %}</table>
-<h2>Pedidos recentes</h2>
-<table><tr><th>Pedido</th><th>Comprador</th><th>Status</th><th>Data</th></tr>
-{% for pedido in pedidos_recentes %}<tr><td>#{{ pedido.id }}</td><td>{{ pedido.comprador.username }}</td><td>{{ pedido.get_status_display }}</td><td>{{ pedido.criado_em|date:"d/m/Y H:i" }}</td></tr>
-{% empty %}<tr><td colspan="4">Nenhum pedido registrado.</td></tr>{% endfor %}</table>
+
+<section class="glass-panel table-panel">
+    <h2>Meu estoque</h2>
+    <table class="glass-table">
+        <thead>
+            <tr><th>Produto</th><th>Estoque</th><th>Preço</th></tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+                <tr><td>{{ produto.nome }}</td><td>{{ produto.estoque }}</td><td>R$ {{ produto.preco }}</td></tr>
+            {% empty %}
+                <tr><td colspan="3">Nenhum produto cadastrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>Vendas por categoria</h2>
+    <table class="glass-table">
+        <thead>
+            <tr><th>Categoria</th><th>Faturamento</th></tr>
+        </thead>
+        <tbody>
+            {% for categoria, valor in vendas_por_categoria %}
+                <tr><td>{{ categoria }}</td><td>R$ {{ valor|floatformat:2 }}</td></tr>
+            {% empty %}
+                <tr><td colspan="2">Nenhuma venda registrada.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>Pedidos recentes</h2>
+    <table class="glass-table">
+        <thead>
+            <tr><th>Pedido</th><th>Comprador</th><th>Status</th><th>Data</th></tr>
+        </thead>
+        <tbody>
+            {% for pedido in pedidos_recentes %}
+                <tr><td>#{{ pedido.id }}</td><td>{{ pedido.comprador.username }}</td><td>{{ pedido.get_status_display }}</td><td>{{ pedido.criado_em|date:"d/m/Y H:i" }}</td></tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhum pedido registrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
 {% endblock %}

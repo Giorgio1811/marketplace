@@ -56,12 +56,13 @@ WSGI_APPLICATION = "marketplace.wsgi.application"
 
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 if DATABASE_URL:
+    is_postgresql = DATABASE_URL.startswith(("postgres://", "postgresql://"))
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
-            ssl_require=True,
+            ssl_require=is_postgresql,
         )
     }
 else:

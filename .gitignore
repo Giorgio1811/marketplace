@@ -11,3 +11,5 @@ staticfiles/
 *.log
 
 seed_producao.py
+.vercel
+.env*

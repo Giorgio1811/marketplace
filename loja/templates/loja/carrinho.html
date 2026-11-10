@@ -1,13 +1,52 @@
 {% extends "loja/base.html" %}
 {% block titulo %}Carrinho | Marketplace{% endblock %}
 {% block conteudo %}
-<h1>Seu carrinho</h1>
-{% if itens %}
-<table><tr><th>Produto</th><th>Qtd.</th><th>Subtotal</th></tr>
-{% for item in itens %}<tr><td>{{ item.produto.nome }}</td><td>{{ item.quantidade }}</td><td>R$ {{ item.subtotal }}</td></tr>{% endfor %}
-<tr><th colspan="2">Total</th><th>R$ {{ total }}</th></tr></table>
-{% if user.is_authenticated %}
-<form method="post" action="{% url 'checkout' %}">{% csrf_token %}<button type="submit">Finalizar compra</button></form>
-{% else %}<p>Para finalizar, <a href="{% url 'rest_framework:login' %}?next=/carrinho/">entre na sua conta</a>. Seu carrinho será mantido.</p>{% endif %}
-{% else %}<p>Seu carrinho está vazio. <a href="{% url 'catalogo' %}">Ver o catálogo</a>.</p>{% endif %}
+<section class="hero glass-panel compact">
+    <div>
+        <span class="eyebrow">Resumo da compra</span>
+        <h1>Seu carrinho</h1>
+    </div>
+</section>
+
+<section class="glass-panel cart-panel">
+    {% if itens %}
+        <table class="glass-table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Qtd.</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in itens %}
+                    <tr>
+                        <td>{{ item.produto.nome }}</td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>R$ {{ item.subtotal }}</td>
+                    </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <th colspan="2">Total</th>
+                    <th>R$ {{ total }}</th>
+                </tr>
+            </tbody>
+        </table>
+
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'checkout' %}" class="checkout-form">
+                {% csrf_token %}
+                <button type="submit" class="primary">Finalizar compra</button>
+            </form>
+        {% else %}
+            <p class="empty-state">
+                Para finalizar,
+                <a href="{% url 'rest_framework:login' %}?next=/carrinho/">entre na sua conta</a>.
+                Seu carrinho será mantido.
+            </p>
+        {% endif %}
+    {% else %}
+        <p class="empty-state">Seu carrinho está vazio. <a href="{% url 'catalogo' %}">Ver o catálogo</a>.</p>
+    {% endif %}
+</section>
 {% endblock %}
