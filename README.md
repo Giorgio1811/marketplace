@@ -2,7 +2,7 @@
 
 Implementação do projeto final de Construção de Backend (Django/Python), baseada no PDF `Projeto5_Guia_do_Aluno (1).pdf`.
 
-> **Estado em 11/11/2026:** testes locais aprovados; `main` está sincronizada com o GitHub. O deploy Vercel aparece como `Ready`, mas o banco Supabase e os dados de produção não foram verificados nesta revisão. A integração Shopify está instalada como sandbox, sem reivindicar uma loja nem migrar o checkout. Nenhum segredo é versionado.
+> **Estado em 11/11/2026:** testes locais aprovados; `main` está sincronizada com o GitHub. O deploy Vercel está `Ready`, e catálogo/API/Admin login responderam via CLI autenticado. O acesso público continua sujeito à proteção de deployment da Vercel. A API de produção retornou 4 produtos; o banco Supabase não pôde ser consultado nesta revisão. A integração Shopify está instalada como sandbox, sem loja reivindicada ou checkout migrado. Nenhum segredo é versionado.
 
 ## 1. O que foi construído
 
@@ -264,11 +264,13 @@ Não digite segredos diretamente em comandos que ficarão no histórico do shell
 - [x] Restringir pedidos do Admin a superusuários.
 - [x] Indicadores do vendedor consideram somente pedidos pagos ou enviados.
 - [x] Exigir `DJANGO_SECRET_KEY` explícita quando `DJANGO_DEBUG=False`.
+- [x] Corrigir domínio principal e origem CSRF nas variáveis Production da Vercel.
 - [ ] Verificar a `DATABASE_URL` remota, migrations e dados atuais do Supabase.
 - [x] Integração Shopify instalada como recurso sandbox na Vercel; sem loja reivindicada.
 - [ ] Decidir/provisionar loja real e integrar pagamento ao checkout.
 - [x] Deploys recentes da Vercel aparecem como `Ready`.
-- [ ] Validar catálogo e API pelo domínio de produção protegido.
+- [x] Validar catálogo, API e login do Admin pelo domínio de produção com CLI autenticado.
+- [ ] Confirmar se a proteção de deployment deve permanecer antes de liberar acesso público anônimo.
 - [ ] Incluir screenshots do catálogo, carrinho e Admin.
 
 ## 10. Erros encontrados e soluções aplicadas
