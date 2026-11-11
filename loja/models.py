@@ -84,6 +84,8 @@ class Avaliacao(models.Model):
 
     class Meta:
         ordering = ["-criada_em"]
+        verbose_name = "avaliação"
+        verbose_name_plural = "avaliações"
         constraints = [
             models.UniqueConstraint(
                 fields=["produto", "usuario"], name="uma_avaliacao_por_usuario_produto"

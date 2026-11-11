@@ -1,0 +1,189 @@
+{% extends "rest_framework/base.html" %}
+{% load static %}
+
+{% block title %}Login do vendedor | Marketplace{% endblock %}
+
+{% block style %}
+  {{ block.super }}
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at top left, rgba(124, 156, 255, 0.22), transparent 28%),
+        linear-gradient(135deg, #09111a, #0f1a2d 38%, #0a1220);
+      font-family: "Inter", "Segoe UI", sans-serif;
+      color: #edf4ff;
+    }
+
+    .auth-page {
+      width: min(100%, 440px);
+      padding: 24px 18px;
+    }
+
+    .auth-card {
+      padding: 28px 26px;
+      border-radius: 26px;
+      background: rgba(18, 29, 48, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 32px 70px rgba(5, 12, 18, 0.42);
+    }
+
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .auth-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #66e0d3, #7c9cff);
+      color: #071724;
+      font-weight: 900;
+      font-size: 1.2rem;
+    }
+
+    .auth-brand small {
+      display: block;
+      color: #a8bbd9;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .auth-brand strong {
+      display: block;
+      color: #edf4ff;
+      font-size: 1.12rem;
+    }
+
+    .auth-card h1 {
+      margin: 0 0 18px;
+      color: #edf4ff;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      letter-spacing: -0.05em;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-group label {
+      color: #edf4ff;
+      font-weight: 600;
+    }
+
+    .field-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(9, 17, 28, 0.7);
+      color: #edf4ff;
+      font-size: 1rem;
+    }
+
+    .field-group input:focus {
+      outline: none;
+      border-color: rgba(124, 156, 255, 0.9);
+      box-shadow: 0 0 0 3px rgba(124, 156, 255, 0.18);
+    }
+
+    .auth-form button {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #66e0d3, #7c9cff);
+      color: #091423;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 18px 30px rgba(124, 156, 255, 0.22);
+    }
+
+    .errorlist {
+      margin: 0 0 10px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 112, 141, 0.4);
+      background: rgba(255, 112, 141, 0.12);
+      color: #ffdfe8;
+      list-style: none;
+    }
+
+    .auth-submit-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+    @media (max-width: 480px) {
+      .auth-card {
+        padding: 22px 18px;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <span class="auth-mark">M</span>
+        <div>
+          <small>Marketplace</small>
+          <strong>Painel do vendedor</strong>
+        </div>
+      </div>
+      <h1>Entre em sua conta</h1>
+      <form method="post" action="." class="auth-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <ul class="errorlist">
+            {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% for field in form %}
+          <div class="field-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+              <ul class="errorlist">
+                {% for error in field.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        {% if next %}
+          <input type="hidden" name="next" value="{{ next }}" />
+        {% endif %}
+
+        <div class="auth-submit-row">
+          <button type="submit">Acessar painel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

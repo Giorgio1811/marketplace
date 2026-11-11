@@ -164,6 +164,176 @@ form .aligned label {
     color: var(--text);
 }
 
+.login-page {
+    background:
+        radial-gradient(circle at top left, rgba(124, 156, 255, 0.22), transparent 30%),
+        linear-gradient(135deg, #09111a, #0f1a2d 40%, #0a1220);
+}
+
+.login-shell {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 32px 16px;
+}
+
+.login-card {
+    width: min(100%, 430px);
+    padding: 28px 26px;
+    border-radius: 28px;
+    border: 1px solid var(--border);
+    background: rgba(18, 29, 48, 0.8);
+    box-shadow: 0 30px 70px rgba(5, 12, 18, 0.42);
+    backdrop-filter: blur(12px);
+}
+
+.login-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.login-brand .brand-mark {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: #071724;
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+.login-brand small {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.login-brand strong {
+    display: block;
+    color: var(--text);
+    font-size: 1.15rem;
+}
+
+.login-card h1 {
+    margin: 0 0 16px;
+    color: var(--text);
+    font-size: clamp(1.75rem, 3vw, 2.4rem);
+    letter-spacing: -0.05em;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.login-card .form-row,
+.login-card .login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.login-card label {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    background: rgba(9, 17, 28, 0.7);
+    color: var(--text);
+}
+
+.login-card input:focus {
+    outline: none;
+    border-color: rgba(124, 156, 255, 0.9);
+    box-shadow: 0 0 0 3px rgba(124, 156, 255, 0.18);
+}
+
+.errornote {
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 112, 141, 0.4);
+    background: rgba(255, 112, 141, 0.12);
+    color: #ffdfe8;
+}
+
+.password-reset-link {
+    margin: 4px 0 0;
+    text-align: right;
+}
+
+.password-reset-link a {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+.login-card button,
+.login-card .submit-row input {
+    width: 100%;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: #091423;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 18px 30px rgba(124, 156, 255, 0.2);
+}
+
+#recent-actions-module,
+.recent-actions,
+.module,
+.module h2,
+.module caption,
+#changelist-filter,
+#content-related,
+#nav-sidebar {
+    background: rgba(18, 29, 48, 0.78);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text);
+}
+
+#recent-actions-module h2,
+#recent-actions-module h3,
+.module h2,
+.module caption,
+#changelist-filter h2 {
+    background: rgba(124, 156, 255, 0.12);
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+}
+
+#recent-actions-module h2 {
+    color: #fff !important;
+    text-transform: capitalize;
+}
+
+.recent-actions li,
+.recent-actions .action-counter,
+.recent-actions .action-link {
+    color: var(--text);
+}
+
+#content-main .module table th,
+#content-main .module table th a,
+#content-main .module table td,
+#content-main .module table td a {
+    color: #000 !important;
+}
+
 .dashboard-shell {
     display: flex;
     flex-direction: column;
@@ -360,6 +530,11 @@ form .aligned label {
 
 .empty-row, .empty-state {
     color: var(--muted);
+}
+
+.dashboard-table th,
+.dashboard-table td {
+    color: #000 !important;
 }
 
 .dashboard-table {

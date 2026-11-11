@@ -1,0 +1,51 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'loja/admin.css' %}">
+{% endblock %}
+
+{% block bodyclass %}login-page{% endblock %}
+
+{% block content %}
+<div class="login-shell">
+  <div class="login-card">
+    <div class="login-brand">
+      <span class="brand-mark">M</span>
+      <div>
+        <small>Marketplace</small>
+        <strong>Administração</strong>
+      </div>
+    </div>
+
+    <h1>Entrar no painel</h1>
+
+    {% if form.errors %}
+      <p class="errornote">
+        {% blocktranslate count counter=form.errors.items|length %}Verifique o usuário e a senha e tente novamente.{% plural %}Verifique os dados informados e tente novamente.{% endblocktranslate %}
+      </p>
+    {% endif %}
+
+    <form action="{{ app_path }}" method="post" id="login-form">
+      {% csrf_token %}
+      <div class="login-field">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+      </div>
+      <div class="login-field">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+      </div>
+
+      {% url 'admin_password_reset' as password_reset_url %}
+      {% if password_reset_url %}
+        <p class="password-reset-link"><a href="{{ password_reset_url }}">Esqueceu sua senha?</a></p>
+      {% endif %}
+
+      <button type="submit">Acessar painel</button>
+      <input type="hidden" name="next" value="{{ next }}">
+    </form>
+  </div>
+</div>
+{% endblock %}

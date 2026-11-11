@@ -89,6 +89,16 @@ Abra:
 
 No Admin, crie uma categoria, dois vendedores com `is_staff` e permissões de Produto e um comprador comum. A criação do produto por vendedor deixa o campo vendedor oculto e preenche o usuário autenticado automaticamente.
 
+### Dados de demonstração
+
+Após criar um usuário staff e aplicar as migrations, é possível adicionar até 50 produtos fictícios com preços aleatórios:
+
+```powershell
+python manage.py seed_demo --vendor-username <usuario-staff>
+```
+
+O comando é repetível, preserva produtos existentes e não cria ou altera contas, senhas nem pedidos. Em produção, execute somente após confirmar o banco de destino e a conta staff que será proprietária dos produtos.
+
 ## 5. Roteiro funcional detalhado
 
 1. Abra `/` sem login e confirme que produtos aparecem pela API.
