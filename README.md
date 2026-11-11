@@ -23,7 +23,7 @@ Implementação completa do projeto final de Construção de Backend (Django/Pyt
 - Painel avançado com vendas por categoria e pedidos recentes.
 - Avaliações: somente compradores podem avaliar, com nota de 1 a 5 e uma avaliação por produto.
 - Configuração dual: SQLite local por padrão e PostgreSQL/Supabase quando `DATABASE_URL` existe.
-- Adaptador WSGI para Vercel em `api/index.py` e roteamento em `vercel.json`.
+- Deploy Django nativo na Vercel, com detecção automática por `manage.py` e WSGI em `marketplace/wsgi.py`.
 
 ## 2. Mapa dos arquivos
 
@@ -190,7 +190,7 @@ As tabelas serão criadas pela migration Django. Não é necessário copiar SQL 
 
 ## 8. Publicação no Vercel
 
-O repositório já contém `api/index.py` e `vercel.json`. O Vercel executará o WSGI do Django como Function Python.
+O Vercel detecta o projeto Django por `manage.py`, usa `marketplace/wsgi.py` como entrada WSGI e coleta os arquivos estáticos automaticamente a partir de `STATIC_ROOT`.
 
 ### Opção A — Dashboard
 
