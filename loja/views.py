@@ -53,9 +53,10 @@ def ver_carrinho(request):
 @login_required
 def painel_vendedor(request):
     produtos = Produto.objects.filter(vendedor=request.user)
-    itens = ItemPedido.objects.filter(produto__vendedor=request.user).select_related(
-        "produto", "pedido"
-    )
+    itens = ItemPedido.objects.filter(
+        produto__vendedor=request.user,
+        pedido__status__in=("PAGO", "ENVIADO"),
+    ).select_related("produto", "pedido")
     vendas_por_categoria = {}
     for item in itens:
         nome_categoria = item.produto.categoria.nome

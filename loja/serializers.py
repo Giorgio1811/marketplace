@@ -62,12 +62,10 @@ class PedidoSerializer(serializers.ModelSerializer):
 
 
 class AvaliacaoSerializer(serializers.ModelSerializer):
-    usuario_nome = serializers.CharField(source="usuario.username", read_only=True)
-
     class Meta:
         model = Avaliacao
-        fields = ["id", "produto", "usuario", "usuario_nome", "nota", "comentario", "criada_em"]
-        read_only_fields = ["produto", "usuario", "criada_em"]
+        fields = ["id", "produto", "nota", "comentario", "criada_em"]
+        read_only_fields = ["produto", "criada_em"]
 
     def validate(self, attrs):
         produto_id = self.context["view"].kwargs["produto_id"]

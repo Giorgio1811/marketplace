@@ -2,13 +2,21 @@ import os
 from pathlib import Path
 
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "local-only-insecure-key")
 DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in {"1", "true", "yes", "on"}
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY") or "local-only-insecure-key"
+if not DEBUG and SECRET_KEY in {
+    "local-only-insecure-key",
+    "change-me-in-production",
+}:
+    raise ImproperlyConfigured(
+        "DJANGO_SECRET_KEY must be configured when DJANGO_DEBUG is False."
+    )
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")

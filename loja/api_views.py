@@ -72,12 +72,15 @@ class AvaliacaoListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         produto_id = self.kwargs["produto_id"]
-        comprou = ItemPedido.objects.filter(
+        compra_concluida = ItemPedido.objects.filter(
             produto_id=produto_id,
             pedido__comprador=self.request.user,
+            pedido__status__in=("PAGO", "ENVIADO"),
         ).exists()
-        if not comprou:
+        if not compra_concluida:
             from rest_framework.exceptions import PermissionDenied
 
-            raise PermissionDenied("Apenas quem comprou o produto pode avaliá-lo.")
+            raise PermissionDenied(
+                "Apenas compradores com pedido pago ou enviado podem avaliar."
+            )
         serializer.save(produto_id=produto_id, usuario=self.request.user)

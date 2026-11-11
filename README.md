@@ -1,8 +1,8 @@
 # Marketplace Simplificado — Projeto 5
 
-Implementação completa do projeto final de Construção de Backend (Django/Python), baseada em `Guia1.txt` e no PDF `Projeto5_Guia_do_Aluno (1).pdf`.
+Implementação do projeto final de Construção de Backend (Django/Python), baseada no PDF `Projeto5_Guia_do_Aluno (1).pdf`.
 
-> **Estado em 03/11/2026:** aplicação criada, banco SQLite local validado, suíte automatizada aprovada, migrations aplicadas no Supabase e estrutura Vercel preparada. Nenhum segredo foi gravado no projeto ou no GitHub.
+> **Estado em 11/11/2026:** testes locais aprovados; `main` está sincronizada com o GitHub. O deploy Vercel aparece como `Ready`, mas o banco Supabase e os dados de produção não foram verificados nesta revisão. A integração Shopify está instalada como sandbox, sem reivindicar uma loja nem migrar o checkout. Nenhum segredo é versionado.
 
 ## 1. O que foi construído
 
@@ -21,7 +21,7 @@ Implementação completa do projeto final de Construção de Backend (Django/Pyt
 - Filtros de catálogo por busca, categoria, preço e disponibilidade.
 - Painel do vendedor com estoque, unidades vendidas e faturamento.
 - Painel avançado com vendas por categoria e pedidos recentes.
-- Avaliações: somente compradores podem avaliar, com nota de 1 a 5 e uma avaliação por produto.
+- Avaliações: somente compradores com pedido pago ou enviado podem avaliar; a resposta pública não expõe a identidade do usuário.
 - Configuração dual: SQLite local por padrão e PostgreSQL/Supabase quando `DATABASE_URL` existe.
 - Deploy Django nativo na Vercel, com detecção automática por `manage.py` e WSGI em `marketplace/wsgi.py`.
 
@@ -34,7 +34,6 @@ marketplace/
 ├── .env.example
 ├── .gitignore
 ├── vercel.json
-├── api/index.py
 ├── marketplace/
 │   ├── settings.py
 │   ├── urls.py
@@ -123,6 +122,23 @@ Exemplo de pedido:
 }
 ```
 
+Resposta ilustrativa (`201 Created`):
+
+```json
+{
+  "id": 42,
+  "status": "ABERTO",
+  "criado_em": "2026-11-11T12:30:00Z",
+  "itens": [
+    {
+      "produto": 1,
+      "quantidade": 2,
+      "preco_unitario": "24.50"
+    }
+  ]
+}
+```
+
 ## 6. Testes automatizados executados
 
 Para manter os testes isolados do Supabase, force um arquivo SQLite temporário. Isso é
@@ -137,7 +153,7 @@ python manage.py test
 Resultado verificado:
 
 ```text
-Ran 19 tests in 27.765s
+Ran 23 tests
 OK
 ```
 
@@ -245,11 +261,15 @@ Não digite segredos diretamente em comandos que ficarão no histórico do shell
 - [x] Filtros de catálogo por busca, preço e disponibilidade.
 - [x] Painel do vendedor com métricas, vendas por categoria e pedidos recentes.
 - [x] Avaliações de produtos com validação de compra e unicidade.
-- [x] Criar projeto Supabase real, configurar `DATABASE_URL` localmente e aplicar migrations.
-- [x] Criar projeto Vercel real e inserir variáveis.
-- [x] Publicar deployment de produção com estado `READY`.
-- [x] Validar catálogo e API no domínio `marketplace-giocb.vercel.app`.
-- [ ] Produzir screenshots do domínio final (opcional).
+- [x] Restringir pedidos do Admin a superusuários.
+- [x] Indicadores do vendedor consideram somente pedidos pagos ou enviados.
+- [x] Exigir `DJANGO_SECRET_KEY` explícita quando `DJANGO_DEBUG=False`.
+- [ ] Verificar a `DATABASE_URL` remota, migrations e dados atuais do Supabase.
+- [x] Integração Shopify instalada como recurso sandbox na Vercel; sem loja reivindicada.
+- [ ] Decidir/provisionar loja real e integrar pagamento ao checkout.
+- [x] Deploys recentes da Vercel aparecem como `Ready`.
+- [ ] Validar catálogo e API pelo domínio de produção protegido.
+- [ ] Incluir screenshots do catálogo, carrinho e Admin.
 
 ## 10. Erros encontrados e soluções aplicadas
 
@@ -294,7 +314,7 @@ Não digite segredos diretamente em comandos que ficarão no histórico do shell
 
 ## 11. Limitações e próximos passos
 
-- Stripe/Mercado Pago não foram ativados: exigem escolha de provedor e credenciais.
-- O gateway de pagamento sandbox continua pendente porque exige escolha de provedor, conta de testes, credenciais e webhook real. Não foi substituído por mock.
-- Supabase e Vercel foram preparados, mas o provisionamento real depende de acesso às contas e não deve ser simulado.
+- O checkout atual registra pedidos, mas não processa cobrança. O recurso Shopify está em sandbox; a loja não foi reivindicada nem integrada ao checkout Django.
+- O estado remoto do Supabase permanece desconhecido nesta revisão. Não considerar migrations ou produtos demo como publicados até validar a conexão e o banco alvo.
+- Os arquivos de credenciais devem permanecer em `.env`/Vercel Environment Variables; nunca copie valores para README, logs ou commits.
 - O ambiente local gerou `db.sqlite3` e `.venv`; ambos estão protegidos pelo `.gitignore` e não devem ser enviados ao repositório.

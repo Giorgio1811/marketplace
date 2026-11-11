@@ -190,6 +190,25 @@ class PedidoAdmin(admin.ModelAdmin):
     list_filter = ("status",)
     inlines = [ItemPedidoInline]
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset if request.user.is_superuser else queryset.none()
+
+    def has_module_permission(self, request):
+        return request.user.is_superuser
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
 
 @admin.register(Avaliacao)
 class AvaliacaoAdmin(admin.ModelAdmin):

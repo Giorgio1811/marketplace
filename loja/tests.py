@@ -168,9 +168,50 @@ class MarketplaceTests(TestCase):
         self.assertContains(response, "Livro")
         self.assertNotContains(response, "Produto de outro")
 
+    def test_vendedor_nao_pode_visualizar_pedidos_no_admin(self):
+        permissions = Permission.objects.filter(
+            content_type__app_label="loja",
+            content_type__model__in=("pedido", "itempedido"),
+        )
+        self.vendedor.user_permissions.set(permissions)
+        Pedido.objects.create(comprador=self.comprador)
+        self.client.force_login(self.vendedor)
+
+        response = self.client.get("/admin/loja/pedido/")
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_painel_vendedor_conta_apenas_pedidos_pagos_ou_enviados(self):
+        pedido_pago = Pedido.objects.create(
+            comprador=self.comprador, status="PAGO"
+        )
+        ItemPedido.objects.create(
+            pedido=pedido_pago,
+            produto=self.produto,
+            quantidade=2,
+            preco_unitario=Decimal("10.00"),
+        )
+        pedido_cancelado = Pedido.objects.create(
+            comprador=self.comprador, status="CANCELADO"
+        )
+        ItemPedido.objects.create(
+            pedido=pedido_cancelado,
+            produto=self.produto,
+            quantidade=3,
+            preco_unitario=Decimal("10.00"),
+        )
+        self.client.force_login(self.vendedor)
+
+        response = self.client.get(reverse("painel-vendedor"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["total_vendido"], 2)
+        self.assertEqual(response.context["faturamento"], Decimal("20.00"))
+
     def test_comprador_pode_avaliar_produto_que_comprou(self):
         self.add(1)
         self.client.post(reverse("checkout"))
+        Pedido.objects.update(status="PAGO")
         api = APIClient()
         api.force_authenticate(self.comprador)
         response = api.post(
@@ -180,6 +221,46 @@ class MarketplaceTests(TestCase):
         )
         self.assertEqual(response.status_code, 201, response.content)
         self.assertEqual(Avaliacao.objects.get().nota, 5)
+
+    def test_pedido_nao_concluido_nao_autoriza_avaliacao(self):
+        self.add(1)
+        self.client.post(reverse("checkout"))
+        api = APIClient()
+        api.force_authenticate(self.comprador)
+
+        response = api.post(
+            reverse("api-avaliacoes", args=[self.produto.pk]),
+            {"nota": 5},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Avaliacao.objects.exists())
+
+    def test_lista_publica_de_avaliacoes_nao_expoe_identidade(self):
+        pedido = Pedido.objects.create(
+            comprador=self.comprador, status="PAGO"
+        )
+        ItemPedido.objects.create(
+            pedido=pedido,
+            produto=self.produto,
+            quantidade=1,
+            preco_unitario=self.produto.preco,
+        )
+        avaliacao = Avaliacao.objects.create(
+            produto=self.produto,
+            usuario=self.comprador,
+            nota=5,
+        )
+
+        response = APIClient().get(
+            reverse("api-avaliacoes", args=[self.produto.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]["id"], avaliacao.pk)
+        self.assertNotIn("usuario", response.json()[0])
+        self.assertNotIn("usuario_nome", response.json()[0])
 
     def test_usuario_sem_compra_nao_pode_avaliar(self):
         api = APIClient()
@@ -194,6 +275,7 @@ class MarketplaceTests(TestCase):
     def test_avaliacao_duplicada_e_rejeitada(self):
         self.add(1)
         self.client.post(reverse("checkout"))
+        Pedido.objects.update(status="PAGO")
         Avaliacao.objects.create(produto=self.produto, usuario=self.comprador, nota=4)
         api = APIClient()
         api.force_authenticate(self.comprador)
