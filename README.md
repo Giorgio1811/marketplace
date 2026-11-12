@@ -2,7 +2,9 @@
 
 Implementação do projeto final de Construção de Backend (Django/Python), baseada no PDF `Projeto5_Guia_do_Aluno (1).pdf`.
 
-> **Estado em 11/11/2026:** testes locais aprovados; `main` está sincronizada com o GitHub. O deploy Vercel está `Ready`, e catálogo/API/Admin login responderam via CLI autenticado. O acesso público continua sujeito à proteção de deployment da Vercel. A API de produção retornou 4 produtos; o banco Supabase não pôde ser consultado nesta revisão. A integração Shopify está instalada como sandbox, sem loja reivindicada ou checkout migrado. Nenhum segredo é versionado.
+> **Loja pública:** [marketplace-public-cyan.vercel.app](https://marketplace-public-cyan.vercel.app/). O projeto público separado foi testado sem autenticação: loja e API de produtos retornam HTTP 200; o painel do vendedor redireciona para login e a API de pedidos nega requisições anônimas. O projeto original continua protegido para Preview. O projeto público não está conectado ao deploy automático do GitHub; publique nele somente deployments de produção, pois a proteção Vercel está desativada nesse projeto.
+>
+> **Estado em 12/11/2026:** testes locais aprovados; `main` sincronizada com o GitHub. A conexão de produção com Supabase foi validada por consulta à API, que retornou 4 produtos; a situação completa das migrations ainda não foi inspecionada. A integração Shopify está instalada como sandbox, sem loja reivindicada ou checkout migrado. Nenhum segredo é versionado.
 
 ## 1. O que foi construído
 
@@ -265,12 +267,14 @@ Não digite segredos diretamente em comandos que ficarão no histórico do shell
 - [x] Indicadores do vendedor consideram somente pedidos pagos ou enviados.
 - [x] Exigir `DJANGO_SECRET_KEY` explícita quando `DJANGO_DEBUG=False`.
 - [x] Corrigir domínio principal e origem CSRF nas variáveis Production da Vercel.
-- [ ] Verificar a `DATABASE_URL` remota, migrations e dados atuais do Supabase.
+- [x] Validar a conexão remota do Supabase pela API pública (4 produtos retornados).
+- [ ] Inspecionar o estado completo das migrations do Supabase.
 - [x] Integração Shopify instalada como recurso sandbox na Vercel; sem loja reivindicada.
 - [ ] Decidir/provisionar loja real e integrar pagamento ao checkout.
 - [x] Deploys recentes da Vercel aparecem como `Ready`.
-- [x] Validar catálogo, API e login do Admin pelo domínio de produção com CLI autenticado.
-- [ ] Confirmar se a proteção de deployment deve permanecer antes de liberar acesso público anônimo.
+- [x] Validar a loja e API públicas sem autenticação e os controles de login do vendedor/Admin.
+- [x] Manter o projeto original e seus previews protegidos; publicação pública isolada em `marketplace-public-cyan.vercel.app`.
+- [ ] Automatizar a publicação de produção no projeto público sem expor deployments de Preview.
 - [ ] Incluir screenshots do catálogo, carrinho e Admin.
 
 ## 10. Erros encontrados e soluções aplicadas
@@ -317,6 +321,7 @@ Não digite segredos diretamente em comandos que ficarão no histórico do shell
 ## 11. Limitações e próximos passos
 
 - O checkout atual registra pedidos, mas não processa cobrança. O recurso Shopify está em sandbox; a loja não foi reivindicada nem integrada ao checkout Django.
-- O estado remoto do Supabase permanece desconhecido nesta revisão. Não considerar migrations ou produtos demo como publicados até validar a conexão e o banco alvo.
+- A conexão do Supabase e a leitura do catálogo foram verificadas em produção; a inspeção completa do histórico de migrations ainda está pendente.
+- O projeto Vercel público é separado e está sem proteção de deployment. Não crie deployments de Preview nele; use apenas Production. O projeto original continua protegido.
 - Os arquivos de credenciais devem permanecer em `.env`/Vercel Environment Variables; nunca copie valores para README, logs ou commits.
 - O ambiente local gerou `db.sqlite3` e `.venv`; ambos estão protegidos pelo `.gitignore` e não devem ser enviados ao repositório.
